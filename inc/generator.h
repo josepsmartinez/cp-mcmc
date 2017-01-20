@@ -1,12 +1,22 @@
-#include "configuration.h"
+#ifndef MCC_ABSTRACT
+	#define MCC_ABSTRACT
+	#include "configuration_abs.h"
+#endif
 
 class MonteCarloSampleGenerator {
+		MonteCarloConfiguration* configuration;
 		float temperature;
 		int size;
-		MonteCarloConfiguration configuration;
+	
+		
+		int Nsamples;
 	
 	public:
-		MonteCarloSampleGenerator(int configuration_size);
+		MonteCarloSampleGenerator(MonteCarloConfiguration* config, int n_samples):
+				configuration(config),
+				Nsamples(n_samples)
+		{}
+ 
 		
 		void experiment(float temp, long int samples);
 	

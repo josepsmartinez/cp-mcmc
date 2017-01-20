@@ -1,16 +1,11 @@
 #include "generator.h"
+#include "configuration_1d.h"
 
 using namespace std;
 
-MonteCarloSampleGenerator::MonteCarloSampleGenerator(int configuration_size):
-	size(configuration_size),
-	configuration(MonteCarloConfiguration(configuration_size))
-{
-}
- 
 void MonteCarloSampleGenerator::experiment(float temp, long int samples) {
 	temperature = temp;
-	configuration.set_temperature(temperature);
+	configuration->set_temperature(temperature);
 	float beta = 1 / temperature;
 
 // THEORY
@@ -21,27 +16,27 @@ void MonteCarloSampleGenerator::experiment(float temp, long int samples) {
 	
 // SAMPLING
 	long int relax = samples / 10;
-	for (int i=0; i < relax; i++) configuration.markov_step();
+	for (int i=0; i < relax; i++) configuration->markov_step();
 	
 	float u_mc = 0;
 	float c_mc = 0;
 	for (int i=0; i < samples; i++) {
-		configuration.markov_step();
-		u_mc += configuration.get_energy();
-		c_mc += configuration.get_energy() * configuration.get_energy();
+		//configuration->markov_step();
+		u_mc += configuration->get_energy();
+		c_mc += configuration->get_energy() * configuration->get_energy();
 	}
 
 	u_mc = u_mc / (float) (samples);	
 	c_mc = pow(beta, 2) * ((c_mc / (float) (samples)) - pow(u_mc, 2)) ;
 	
-	printf("Average Energy: %.3f | ", u_mc / (float) (size));
-	printf("Average Specific Heat: %.3f  \n", c_mc / (float) (size));
+	//printf("Average Energy: %.3f | ", configuration->by_size(u_mc));
+	//printf("Average Specific Heat: %.3f  \n", configuration->by_size(c_mc));
 	
 }
 
 void MonteCarloSampleGenerator::test() {
-	for (float f=4.f; f > 0.f; f-=0.2f) {
+	for (float f=0.2f; f < 4.2f; f+=0.2f) {
 		srand(time(NULL));
-		experiment(f, 10000);
+		experiment(f, Nsamples);
 	}
 }

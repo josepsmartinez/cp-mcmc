@@ -11,7 +11,7 @@ compile_source: $(SOURCE)generator.cpp
 	mv *.o $(OBJECTS)
 	
 build_lib: compile_source
-	ar -cvq libmcsamplegen.a $(OBJECTS)configuration.o $(OBJECTS)generator.o
+	ar -cvq libmcsamplegen.a $(OBJECTS)*.o
 	mv *.a $(BINARIES)
 
 compile_exec: build_lib
