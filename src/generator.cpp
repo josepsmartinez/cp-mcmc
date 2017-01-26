@@ -21,7 +21,7 @@ void MonteCarloSampleGenerator::experiment(float temp, long int samples) {
 	float u_mc = 0;
 	float c_mc = 0;
 	for (int i=0; i < samples; i++) {
-		//configuration->markov_step();
+		configuration->markov_step();
 		u_mc += configuration->get_energy();
 		c_mc += configuration->get_energy() * configuration->get_energy();
 	}
@@ -29,8 +29,8 @@ void MonteCarloSampleGenerator::experiment(float temp, long int samples) {
 	u_mc = u_mc / (float) (samples);	
 	c_mc = pow(beta, 2) * ((c_mc / (float) (samples)) - pow(u_mc, 2)) ;
 	
-	//printf("Average Energy: %.3f | ", configuration->by_size(u_mc));
-	//printf("Average Specific Heat: %.3f  \n", configuration->by_size(c_mc));
+	printf("Average Energy: %.3f | ", configuration->by_size(u_mc));
+	printf("Average Specific Heat: %.3f  \n", configuration->by_size(c_mc));
 	
 }
 

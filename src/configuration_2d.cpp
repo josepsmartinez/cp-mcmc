@@ -30,32 +30,18 @@ short int MonteCarloConfiguration2D::read_spin(SpinIndex index) {
 
 void MonteCarloConfiguration2D::load_energy() {
 	energy = 0;
-	SpinIndex index(2, 0);
-	SpinIndex index_next(2, 0);
 	
 	// HORIZONTAL
 	for(int i=0; i < size-1; i++) {
-		index[0] = i;
-		index_next[0] = i+1;
-		
 		for(int j=0; j < size; j++){
-			index[1] = j;
-			index_next[1] = j;
-
-			energy -= read_spin(index) * read_spin(index_next);
+			energy -= spin_value( !(configuration[i][j] ^ configuration[i+1][j]));
 		}
 	}
 	
 	// VERTICAL
 	for(int i=0; i < size; i++) {
-		index[0] = i;
-		index_next[0] = i;
-
 		for(int j=0; j < size-1; j++){
-			index[1] = j;
-			index_next[1] = j+1;
-			
-			energy -= read_spin(index) * read_spin(index_next);
+			energy -= spin_value( !(configuration[i][j] ^ configuration[i][j+1]));
 		}
 	}
 	
@@ -71,13 +57,13 @@ short int MonteCarloConfiguration2D::flip_energy(SpinIndex index) {
 	int i = index[0];
 	int j = index[1];
 	
-	SpinIndex nextv(2,0), nexth(2,0), prevv(2,0), prevh(2,0);
-	nexth[0] = i+1; nexth[1] = j;
-	prevh[0] = i-1; prevh[1] = j;
-	nextv[0] = i; nextv[1] = j+1;
-	prevv[0] = i; prevv[1] = j-1;
+	// HORIZONTAL
+	if (i < size-1) diff += 2 * spin_value( !(configuration[i][j]^ configuration[i+1][j]));
+	if (i > 0) diff += 2 * spin_value( !(configuration[i][j] ^ configuration[i-1][j]));
 	
-	diff += 2 * read_spin(index)  * (read_spin(nexth) + read_spin(prevh) + read_spin(nextv) + read_spin(prevv));
+	// VERTICAL
+	if (j < size-1) diff += 2 * spin_value( !(configuration[i][j] ^ configuration[i][j+1]));
+	if (j > 0) diff += 2 * spin_value( !(configuration[i][j] ^ configuration[i][j-1]));
 	
 	return diff;
 }
@@ -110,7 +96,7 @@ void MonteCarloConfiguration2D::markov_step() {
 void MonteCarloConfiguration2D::test() {
 	srand(time(NULL));
 	
-	for (int i=0; i < size; i++) {
+	for (int i=0; i < pow(size,2); i++) {
 		markov_step();
 		cout << "Energy: " << energy << '\n';
 	}
