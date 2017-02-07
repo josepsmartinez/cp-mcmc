@@ -1,10 +1,7 @@
 #include "configuration_1d.h"
 
-using namespace std;
-
-
 MonteCarloConfiguration1D::MonteCarloConfiguration1D(int configuration_size) :
-	MonteCarloConfiguration(configuration_size)
+	MonteCarloConfiguration(configuration_size, 2)
 {
 	configuration = (bool*) malloc(size * sizeof(bool));
 	for(int i=0; i < size; i++)
@@ -33,9 +30,11 @@ void MonteCarloConfiguration1D::load_energy() {
 	cout << "First Energy: " << energy << '\n';
 }
 
-float MonteCarloConfiguration1D::by_size(float value) {
-	return value / (float) size;
+
+int MonteCarloConfiguration1D::available_spins() {
+	return size;
 }
+
 
 
 short int MonteCarloConfiguration1D::flip_energy(SpinIndex index) {
@@ -48,6 +47,13 @@ short int MonteCarloConfiguration1D::flip_energy(SpinIndex index) {
 	return diff;
 }
 
+SpinIndex MonteCarloConfiguration1D::random_spin() {
+	SpinIndex index(1);
+	index[0] = rand() % size;
+	
+	return index;
+	
+}
 
 
 void MonteCarloConfiguration1D::try_flip(SpinIndex index) {
@@ -64,12 +70,27 @@ void MonteCarloConfiguration1D::try_flip(SpinIndex index) {
 	}
 }
 
-void MonteCarloConfiguration1D::markov_step() {
-	for (int i=0, r; i < size; i++) {
-		r = rand() % size;
-		try_flip(SpinIndex(1, r));
-	}
+void MonteCarloConfiguration1D::accumulate() {
+	accumulators[0] += energy;
+	accumulators[1] += energy*energy;
 }
+
+vector<float> MonteCarloConfiguration1D::realize(int samples){
+	vector<float> results(2);
+	results[0] = by_size(accumulators[0] / (float) samples); // U_MC
+	results[1] = by_size(pow(1/temperature, 2) * ((accumulators[1] / (float) samples) - pow(accumulators[0] / (float) samples, 2))); // C_MC
+	
+	return results;
+	
+}
+
+void MonteCarloConfiguration1D::print_realization(vector<float> results, ostream& stream){
+	stream << fixed << setprecision(4);
+	stream << "Energy: " <<  results[0] << " | ";
+	stream << "Specific Heat: " << results[1] << "\n";
+
+}
+
 
 void MonteCarloConfiguration1D::test() {
 	srand(time(NULL));

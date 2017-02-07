@@ -9,28 +9,27 @@ void MonteCarloSampleGenerator::experiment(float temp, long int samples) {
 	float beta = 1 / temperature;
 
 // THEORY
-	float u_theory = -tanh(beta);
-	float c_theory = pow(beta / cosh(beta), 2);
+	float u_theory = -tanh(beta); // 1D
+	float c_theory = pow(beta / cosh(beta), 2); // 1D
+	double m_theory;
+	if(temperature < (2 / log(1 + sqrt(2)))) m_theory = pow(1 - pow(sinh(2*beta), -4), 1/8); 
+	else m_theory = 0;
 	
-	printf("Theory Average Energy: %.3f | Theory Specific Heat: %.3f | Beta: %.3f  | Temperature: %.2f  | ", u_theory, c_theory, beta, temperature);
+	printf("Theory Energy: %.3f | Theory Specific Heat: %.3f | Theory Magnetization: %.3f | Beta: %.3f  | Temperature: %.2f  | ", u_theory, c_theory, m_theory, beta, temperature);
 	
 // SAMPLING
 	long int relax = samples / 10;
-	for (int i=0; i < relax; i++) configuration->markov_step();
+	for (int i=0; i < relax; i++) configuration->markov_step(relax=true);
 	
-	float u_mc = 0;
-	float c_mc = 0;
+	configuration->clear();
 	for (int i=0; i < samples; i++) {
 		configuration->markov_step();
-		u_mc += configuration->get_energy();
-		c_mc += configuration->get_energy() * configuration->get_energy();
 	}
 
-	u_mc = u_mc / (float) (samples);	
-	c_mc = pow(beta, 2) * ((c_mc / (float) (samples)) - pow(u_mc, 2)) ;
+// REALIZATION AND OUTPUTTING	
+	vector<float> results = configuration->realize(samples);	
+	configuration->print_realization(results, std::cout);
 	
-	printf("Average Energy: %.3f | ", configuration->by_size(u_mc));
-	printf("Average Specific Heat: %.3f  \n", configuration->by_size(c_mc));
 	
 }
 
