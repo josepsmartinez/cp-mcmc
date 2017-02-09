@@ -3,12 +3,14 @@
 MonteCarloConfiguration2D::MonteCarloConfiguration2D(int configuration_size) :
 	MonteCarloConfiguration(configuration_size, 3)
 {
-	
+	srand(time(NULL));
 	configuration = (bool**) malloc(size * sizeof(bool*));
+	
 	for(int i=0; i < size; i++){
 		configuration[i] = (bool*) malloc(size * sizeof(bool));
 		for (int j=0; j < size; j++)
-			configuration[i][j] = true;
+			configuration[i][j] = (bool) (rand()%2);
+		
 	}
 	
 	load_energy();
@@ -115,20 +117,49 @@ void MonteCarloConfiguration2D::accumulate() {
 
 vector<float> MonteCarloConfiguration2D::realize(int samples){
 	vector<float> results(3);
-	results[0] = by_size(accumulators[0] / (float) samples); // U_MC
-	results[1] = by_size(pow(1/temperature, 2) * ((accumulators[1] / (float) samples) - pow(accumulators[0] / (float) samples, 2))); // C_MC
-	results[2] = by_size(accumulators[2] / (float) samples); // M_MC
+	float beta = 1/temperature;
+	float u_mc = accumulators[0] / (float) samples;
+	
+	results[0] = by_size(u_mc); // U
+	results[1] = by_size(beta * beta * ( (accumulators[1] / (float) samples) - (u_mc * u_mc) )); // C
+	results[2] = by_size(accumulators[2] / (float) samples); // M
 	
 	return results;
 	
 }
 
+void MonteCarloConfiguration2D::print_header(ostream& stream) {
+	stream << left;
+	stream << setw(column_w) << "T";
+	stream << setw(column_w) << "beta";
+	stream << setw(column_w) << "M_theory";
+	stream << setw(column_w) << "M_mc";
+	stream << setw(column_w) << "U_mc";
+	stream << setw(column_w) << "C_mc";
+	stream << endl << endl;
+}
+
+void MonteCarloConfiguration2D::print_theory(ostream& stream) {
+	float beta = 1 / temperature;
+	double m_theory;
+		if(temperature < (2 / log(1 + sqrt(2)))) m_theory = pow(1 - pow(sinh(2*beta), -4), 1/8.0); 
+		else m_theory = 0;
+	
+	
+	stream << fixed << setprecision(4);
+	
+	stream << setw(column_w) << temperature;
+	stream << setw(column_w) << beta;
+	stream << setw(column_w) << m_theory;
+}
+
 void MonteCarloConfiguration2D::print_realization(vector<float> results, ostream& stream){
 	stream << fixed << setprecision(4);
-	stream << "Energy: " << results[0] << " | ";
-	stream << "Specific Heat: " << results[1] << " | ";
-	stream << "Magnetization: " << results[2] << "\n";
-
+	
+	stream << setw(column_w) << results[2]; // m_mc
+	stream << setw(column_w) << results[0]; // u_mc
+	stream << setw(column_w) << results[1]; // c_mc
+	stream << endl;
 }
 
 void MonteCarloConfiguration2D::test() {

@@ -3,9 +3,6 @@
 	#include "configuration_abs.h"
 #endif
 
-#define UMC 0
-#define CMC 1
-
 class MonteCarloConfiguration1D: public MonteCarloConfiguration {
 		bool* configuration; // spins implementation
 
@@ -26,6 +23,8 @@ class MonteCarloConfiguration1D: public MonteCarloConfiguration {
 			
 		int available_spins();
 	
+		void print_header(ostream& stream);
+		void print_theory(ostream& stream);
 		void print_realization(vector<float> results, ostream& stream);	
 			
 		void test();

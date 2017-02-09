@@ -3,10 +3,12 @@
 MonteCarloConfiguration1D::MonteCarloConfiguration1D(int configuration_size) :
 	MonteCarloConfiguration(configuration_size, 2)
 {
+	srand(time(NULL));
 	configuration = (bool*) malloc(size * sizeof(bool));
-	for(int i=0; i < size; i++)
-		configuration[i] = true;
 	
+	for(int i=0; i < size; i++)
+		configuration[i] = (bool) (rand()%2);
+	for (int j=0; j < size; j++) cout << configuration[j] << " ";
 	load_energy();
 	
 }
@@ -84,17 +86,40 @@ vector<float> MonteCarloConfiguration1D::realize(int samples){
 	
 }
 
+void MonteCarloConfiguration1D::print_header(ostream& stream) {
+	stream << left;
+	stream << setw(column_w) << "T";
+	stream << setw(column_w) << "beta";
+	stream << setw(column_w) << "U_theory";
+	stream << setw(column_w) << "C_theory";
+	stream << setw(column_w) << "U_mc";
+	stream << setw(column_w) << "C_mc";
+	stream << endl << endl;
+}
+
+void MonteCarloConfiguration1D::print_theory(ostream& stream) {
+	float beta = 1 / temperature;
+	float u_theory = -tanh(beta); // 1D
+	float c_theory = pow(beta / cosh(beta), 2); // 1D
+	
+	stream << fixed << setprecision(4);
+	
+	stream << setw(column_w) << temperature;
+	stream << setw(column_w) << beta;
+	stream << setw(column_w) << u_theory;
+	stream << setw(column_w) << c_theory;
+}
+
 void MonteCarloConfiguration1D::print_realization(vector<float> results, ostream& stream){
 	stream << fixed << setprecision(4);
-	stream << "Energy: " <<  results[0] << " | ";
-	stream << "Specific Heat: " << results[1] << "\n";
-
+	
+	stream << setw(column_w) << results[0];
+	stream << setw(column_w) << results[1];
+	stream << endl;
 }
 
 
 void MonteCarloConfiguration1D::test() {
-	srand(time(NULL));
-	
 	for (int i=0; i < size; i++) {
 		markov_step();
 		cout << "Energy: " << energy << '\n';

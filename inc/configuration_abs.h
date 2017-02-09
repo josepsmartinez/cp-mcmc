@@ -31,9 +31,11 @@ class MonteCarloConfiguration {
 	public:
 		MonteCarloConfiguration(int configuration_size, int n_accumulators);
 		
+		// PROTECTED ACESS
 		void set_temperature(float temp);
-		long int get_energy(); // prob will fall out
-		
+		int get_size();
+		float get_acc(int index);
+
 		static short int spin_value(bool spin);
 		
 		
@@ -48,11 +50,13 @@ class MonteCarloConfiguration {
 		
 		void clear(); // clear accumulated values
 		
-		// READABILITY
-		int get_size();
-		float get_acc(int index);
+		
 		
 		// OUTPUT
+		//	tools for writing realization results (and its analytical solution) in a table form
+		static const int column_w = 15;
+		virtual void print_header(ostream& stream) = 0;
+		virtual void print_theory(ostream& stream) = 0;
 		virtual void print_realization(vector<float> results, ostream& stream) = 0;
 	
 		virtual void test() = 0;

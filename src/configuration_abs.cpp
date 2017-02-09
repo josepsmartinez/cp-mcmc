@@ -6,8 +6,6 @@ MonteCarloConfiguration::MonteCarloConfiguration(int configuration_size, int n_a
 {}
 
 void MonteCarloConfiguration::set_temperature(float temp){ temperature = temp; }
-		
-long int MonteCarloConfiguration::get_energy(){  return energy; }
 
 int MonteCarloConfiguration::get_size() { return size; }
 

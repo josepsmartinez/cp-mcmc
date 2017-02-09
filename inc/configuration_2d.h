@@ -25,6 +25,8 @@ class MonteCarloConfiguration2D: public MonteCarloConfiguration {
 				
 		int available_spins();
 	
+		void print_header(ostream& stream);
+		void print_theory(ostream& stream);
 		void print_realization(vector<float> results, ostream& stream);	
 			
 		void test();
