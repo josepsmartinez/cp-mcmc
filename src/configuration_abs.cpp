@@ -6,7 +6,7 @@ MonteCarloConfiguration::MonteCarloConfiguration(int configuration_size, int n_a
 {}
 
 void MonteCarloConfiguration::set_temperature(float temp){ temperature = temp; }
-
+		
 int MonteCarloConfiguration::get_size() { return size; }
 
 float MonteCarloConfiguration::get_acc(int index) { return accumulators[index]; }
@@ -36,5 +36,5 @@ void MonteCarloConfiguration::markov_step(bool relax=false) {
 }
 
 float MonteCarloConfiguration::by_size(float value) {
-	return value / (float) available_spins();
+	return value / available_spins();
 }

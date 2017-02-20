@@ -9,16 +9,16 @@ class MonteCarloSampleGenerator {
 		int size;
 	
 		
-		int Nsamples;
+		long int Nsamples;
 	
 	public:
-		MonteCarloSampleGenerator(MonteCarloConfiguration* config, int n_samples):
+		MonteCarloSampleGenerator(MonteCarloConfiguration* config, long int n_samples):
 				configuration(config),
 				Nsamples(n_samples)
 		{}
  
 		
-		void experiment(float temp, long int samples);
+		void experiment(float temp);
 	
 		void test();
 		

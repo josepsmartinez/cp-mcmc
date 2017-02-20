@@ -19,7 +19,7 @@ class MonteCarloConfiguration1D: public MonteCarloConfiguration {
 		~MonteCarloConfiguration1D() {};
 		
 		void accumulate();
-		vector<float> realize(int samples);
+		vector<float> realize(long int samples);
 			
 		int available_spins();
 	

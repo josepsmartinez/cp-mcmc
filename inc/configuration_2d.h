@@ -5,13 +5,13 @@
 
 class MonteCarloConfiguration2D: public MonteCarloConfiguration {
 		bool** configuration; // spins implementation
-		long int energy_diag; // energy accumulated on M_mc measurement
+		long int magnetization; // M_mc measurement
 	
 	
 		short int read_spin(SpinIndex index);
 		void load_energy();
 		short int flip_energy(SpinIndex index);
-		short int flip_energy_diag(SpinIndex index);
+		short int flip_magnetization(SpinIndex index);
 
 		SpinIndex random_spin();
 		void try_flip(SpinIndex index);
@@ -21,7 +21,7 @@ class MonteCarloConfiguration2D: public MonteCarloConfiguration {
 		~MonteCarloConfiguration2D() {};
 		
 		void accumulate();
-		vector<float> realize(int samples);
+		vector<float> realize(long int samples);
 				
 		int available_spins();
 	

@@ -21,4 +21,4 @@ run: compile_exec
 	./exec
 
 clean:
-	rm $(OBJECTS)*.o $(BINARIES)*.a exec
+	rm -f $(OBJECTS)*.o $(BINARIES)*.a exec

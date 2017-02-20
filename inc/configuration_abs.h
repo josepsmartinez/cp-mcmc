@@ -17,7 +17,7 @@ class MonteCarloConfiguration {
 		long int energy;
 		int size;
 		
-		vector<float> accumulators; // abstraction for accumulating values in between markov steps
+		vector<long int> accumulators; // abstraction for accumulating values in between markov steps
 	
 		virtual void load_energy() = 0; // computes the configuration energy from scratch
 		virtual short int read_spin(SpinIndex index) = 0; // reads the spin physical value {-1, 1}
@@ -44,7 +44,7 @@ class MonteCarloConfiguration {
 	
 		virtual void accumulate() = 0; // accepts current configuration
 		void markov_step(bool relax=false); // generates a new configuration | relax: whether the new configuration should be discarded
-		virtual std::vector<float> realize(int samples) = 0; // computes the final simulation values, assuming <samples> accumulations have ocurred
+		virtual std::vector<float> realize(long int samples) = 0; // computes the final simulation values, assuming <samples> accumulations have ocurred
 		
 		
 		
