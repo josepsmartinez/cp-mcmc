@@ -120,7 +120,6 @@ void MonteCarloConfiguration2D::accumulate() {
 	accumulators[1] += energy * energy;
 	accumulators[2] += magnetization;
 	
-	//cout << "Accumating " << energy << " to " << accumulators[0] << " and " << (energy*energy) << " to " << accumulators[1] << " \n";
 }
 
 vector<float> MonteCarloConfiguration2D::realize(long int samples){
@@ -128,11 +127,6 @@ vector<float> MonteCarloConfiguration2D::realize(long int samples){
 	double beta = 1/temperature;
 	float u_mc = accumulators[0] / (float) samples;
 	
-	
-	// DEBUG
-	//cout << "\t accs: " << accumulators[0] << " " << accumulators[0]/samples << " " << energy << " " << energy*energy << " " << (accumulators[0]/samples)*(accumulators[0]/samples) << " " << accumulators[1] << " " << accumulators[1]/samples;
-	//cout << "\t energy: " << energy << " " << samples;
-	//cout << "\t print acc: " << eu_diff << "\t" << u_mc << " " << e2_mc << "\t" <<  u2_mc << " " << e2_mc << "\t" << e2_mc - (u_mc*u_mc) << "\n";
 	
 	results[0] = by_size(u_mc); 														// U
 	results[1] = by_size( beta * beta * ((accumulators[1]/(float)(samples) - u_mc*u_mc )) ); // C
@@ -143,6 +137,7 @@ vector<float> MonteCarloConfiguration2D::realize(long int samples){
 }
 
 void MonteCarloConfiguration2D::print_header(ostream& stream) {
+
 	stream << left;
 	stream << setw(column_w) 			<< "T";
 	stream << setw(column_w) 			<< "beta";
@@ -151,6 +146,9 @@ void MonteCarloConfiguration2D::print_header(ostream& stream) {
 	stream << setw(column_w) 			<< "U_mc";
 	stream << setw(column_w) 			<< "C_mc";
 	stream 							<< endl << endl;
+
+
+
 }
 
 void MonteCarloConfiguration2D::print_theory(ostream& stream) {
@@ -162,24 +160,24 @@ void MonteCarloConfiguration2D::print_theory(ostream& stream) {
 	
 	stream << fixed << setprecision(4);
 	
+
 	stream << setw(column_w) << temperature;
 	stream << setw(column_w) << beta;
 	stream << setw(column_w) << m_theory;
+
 	
 }
 
 void MonteCarloConfiguration2D::print_realization(vector<float> results, ostream& stream){
 	stream << fixed << setprecision(4);
 	
-	stream << setw(column_w) << results[2]; 		// M
-	stream << setw(column_w) << results[0]; 		// U
-	stream << setw(column_w) << setprecision(8) << results[1]; 		// C
-	
 
-	
-	stream << setw(column_w) << energy;
-
+	stream << setw(column_w) << results[2]; 			// M
+	stream << setw(column_w) << results[0]; 			// U
+	stream << setw(column_w) << setprecision(8) << results[1]; 	// C
 	stream << endl;
+
+	
 }
 
 void MonteCarloConfiguration2D::test() {

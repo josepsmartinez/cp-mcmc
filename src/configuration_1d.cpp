@@ -10,8 +10,6 @@ MonteCarloConfiguration1D::MonteCarloConfiguration1D(int configuration_size) :
 		configuration[i] = (bool) (rand()%2);
 		//configuration[i] = true;
 	
-	for (int j=0; j < size; j++) cout << configuration[j] << " ";
-	
 	load_energy();
 }
 
@@ -85,8 +83,7 @@ vector<float> MonteCarloConfiguration1D::realize(long int samples){
 	float u_mc = accumulators[0] / (float) samples;
 	
 	results[0] = by_size(u_mc); // U
-	results[1] = by_size( beta * beta * ((accumulators[1]/samples - u_mc*u_mc) ) ); // C
-	//results[1] = beta*beta * (by_size(accumulators[1]/samples - accumulators[0]*accumulators[0]/samples/samples));			
+	results[1] = by_size( beta * beta * ((accumulators[1]/samples - u_mc*u_mc) ) ); // C		
 
 	
 	return results;
@@ -94,6 +91,7 @@ vector<float> MonteCarloConfiguration1D::realize(long int samples){
 }
 
 void MonteCarloConfiguration1D::print_header(ostream& stream) {
+	
 	stream << left;
 	stream << setw(column_w) << "T";
 	stream << setw(column_w) << "beta";
@@ -102,6 +100,7 @@ void MonteCarloConfiguration1D::print_header(ostream& stream) {
 	stream << setw(column_w) << "U_mc";
 	stream << setw(column_w) << "C_mc";
 	stream << endl << endl;
+
 }
 
 void MonteCarloConfiguration1D::print_theory(ostream& stream) {
@@ -111,18 +110,23 @@ void MonteCarloConfiguration1D::print_theory(ostream& stream) {
 	
 	stream << fixed << setprecision(4);
 	
+
 	stream << setw(column_w) << temperature;
 	stream << setw(column_w) << beta;
 	stream << setw(column_w) << u_theory;
 	stream << setw(column_w) << c_theory;
+
+
 }
 
 void MonteCarloConfiguration1D::print_realization(vector<float> results, ostream& stream){
 	stream << fixed << setprecision(4);
 	
+
 	stream << setw(column_w) << results[0];
 	stream << setw(column_w) << setprecision(6) << results[1];
 	stream << endl;
+
 }
 
 
